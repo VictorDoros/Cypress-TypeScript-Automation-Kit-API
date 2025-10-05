@@ -8,11 +8,11 @@ describe('Get products', {}, () => {
     env = new Environment()
   })
 
-  it('Create the cart, get it', () => {
+  it('Should create a cart and successfully retrieve it', () => {
     App.apiActions.cartFlow.createAndGetCart(env)
   })
 
-  it('Should have status 200 and response be an array when getting the list of the products', () => {
+  it('Should return 200 and an array response when retrieving the list of products', () => {
     App.apiActions.cartFlow.createCartAddItemGetCart(env, 'Cream Cheese')
   })
 })

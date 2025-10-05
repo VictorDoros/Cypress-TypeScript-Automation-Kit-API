@@ -24,4 +24,24 @@ export default class Cart {
       },
     })
   }
+
+    updateQuantityItem(env: Environment, cartId: string, itemId: string) {
+    return cy.api({
+      url: `${env.getEnvironment()}/carts/${cartId}/items/${itemId}`,
+      method: 'PATCH',
+      body: {
+        quantity: Math.floor(Math.random() * (9 - 2) + 2),
+      },
+    })
+  }
+
+    replaceItem(env: Environment, cartId: string, initialItemId: string, replacedProductId: string) {
+    return cy.api({
+      url: `${env.getEnvironment()}/carts/${cartId}/items/${initialItemId}`,
+      method: 'PUT',
+      body: {
+        productId: `${replacedProductId}`,
+      },
+    })
+  }
 }

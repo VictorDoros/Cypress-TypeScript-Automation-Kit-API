@@ -8,11 +8,11 @@ describe('Get products', {}, () => {
     env = new Environment()
   })
 
-  it('Should have status 200 and response be an array when getting the list of the products', () => {
+  it('Should return 200 and an array response when retrieving the list of products', () => {
     App.apiActions.productFlow.getListProducts(env)
   })
 
-  it('Should have status 200 after getting a single product, have the corresponding product name, and current stock above 1', () => {
+  it('Should return 200 when retrieving a single product and verify its name and stock are valid', () => {
     App.apiActions.productFlow.getProduct(env, 'Cream Cheese')
   })
 })
