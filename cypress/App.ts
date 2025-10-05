@@ -1,5 +1,6 @@
 import CartFlow from './flows/CartFlow'
 import ProductFlow from './flows/ProductFlow'
+import RegisterClientFlow from './flows/RegisterClientFlow'
 
 class API_Actions {
   get productFlow() {
@@ -8,6 +9,10 @@ class API_Actions {
 
   get cartFlow() {
     return CartFlow
+  }
+
+  get registerClientFlow() {
+    return RegisterClientFlow
   }
 }
 
