@@ -1,0 +1,19 @@
+{
+  "name": "cypress_ts_automation_api_kit",
+  "version": "1.0.0",
+  "description": "Cypress + TypeScript API testing framework template with POM and reports",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "devDependencies": {
+    "@types/node": "^24.5.2",
+    "cypress": "^15.3.0",
+    "cypress-map": "^1.52.0",
+    "cypress-plugin-api": "^2.11.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.2"
+  }
+}
