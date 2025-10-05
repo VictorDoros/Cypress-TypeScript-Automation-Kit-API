@@ -4,7 +4,7 @@
   "description": "Cypress + TypeScript API testing framework template with POM and reports",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "headlessMode": "cypress run"
   },
   "author": "",
   "license": "SEE LICENSE IN LICENSE.md",
