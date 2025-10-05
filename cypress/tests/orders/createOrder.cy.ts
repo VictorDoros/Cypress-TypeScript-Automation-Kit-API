@@ -14,7 +14,7 @@ describe('Create Order', {}, () => {
     App.apiActions.registerClientFlow.registerClient(env, token)
   })
 
-  it('Should create a cart and successfully retrieve it', () => {
-    App.apiActions.cartFlow.createAndGetCart(env)
+  it('Should return 201 when a new order is created', () => {
+    App.apiActions.orderFlow.createCartAddItemGetCartCreateOrder(env, token, 'Cream Cheese')
   })
 })
