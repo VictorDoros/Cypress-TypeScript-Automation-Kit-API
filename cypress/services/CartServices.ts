@@ -25,7 +25,7 @@ export default class Cart {
     })
   }
 
-    updateQuantityItem(env: Environment, cartId: string, itemId: string) {
+  updateQuantityItem(env: Environment, cartId: string, itemId: string) {
     return cy.api({
       url: `${env.getEnvironment()}/carts/${cartId}/items/${itemId}`,
       method: 'PATCH',
@@ -35,7 +35,12 @@ export default class Cart {
     })
   }
 
-    replaceItem(env: Environment, cartId: string, initialItemId: string, replacedProductId: string) {
+  replaceItem(
+    env: Environment,
+    cartId: string,
+    initialItemId: string,
+    replacedProductId: string
+  ) {
     return cy.api({
       url: `${env.getEnvironment()}/carts/${cartId}/items/${initialItemId}`,
       method: 'PUT',
