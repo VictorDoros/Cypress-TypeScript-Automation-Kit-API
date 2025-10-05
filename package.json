@@ -9,10 +9,13 @@
   "author": "",
   "license": "SEE LICENSE IN LICENSE.md",
   "devDependencies": {
+    "@faker-js/faker": "^10.0.0",
     "@types/node": "^24.5.2",
     "cypress": "^15.3.0",
     "cypress-map": "^1.52.0",
     "cypress-plugin-api": "^2.11.2",
+    "install": "^0.13.0",
+    "npm": "^11.6.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.2"
   }

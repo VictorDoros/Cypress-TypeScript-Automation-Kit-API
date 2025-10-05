@@ -2,7 +2,6 @@
   "compilerOptions": {
     "target": "es5",
     "lib": ["es5", "dom"],
-    "module": "node16",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
