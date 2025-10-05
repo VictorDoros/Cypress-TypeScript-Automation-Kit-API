@@ -39,4 +39,4 @@ class ProductFlow {
   }
 }
 
-export default new ProductFlow()
+export default new ProductFlow

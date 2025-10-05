@@ -14,7 +14,7 @@ class CartFlow {
 
   createAndGetCart(env: Environment) {
     return this.createCartAndReturnId(env).then((cartId) => {
-      this.cart.getCart(env, cartId).then((getCartResponse) => {
+      return this.cart.getCart(env, cartId).then((getCartResponse) => {
         expect(getCartResponse.status).to.eq(200)
         expect(getCartResponse.body.items).to.be.an('array').and.empty
       })
@@ -43,4 +43,4 @@ class CartFlow {
   }
 }
 
-export default new CartFlow()
+export default new CartFlow
