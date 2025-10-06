@@ -16,4 +16,39 @@ export default class Order {
       },
     })
   }
+
+getOrder(env: Environment, token: Token, orderId: string) {
+    return cy.api({
+      url: `${env.getEnvironment()}/orders/${orderId}`,
+      method: 'GET',
+      headers: {
+        Authorization: `Bearer ${token.getToken()}`,
+      },
+      failOnStatusCode: false,
+    })
+  }
+
+    updateOrder(env: Environment, token: Token, orderId: string, orderComment: string) {
+    return cy.api({
+      url: `${env.getEnvironment()}/orders/${orderId}`,
+      method: 'PATCH',
+      body: {
+        comment: `${orderComment}`,
+      },
+      headers: {
+        Authorization: `Bearer ${token.getToken()}`,
+      },
+    })
+  }
+
+    deleteOrder(env: Environment, token: Token, orderId: string) {
+    return cy.api({
+      url: `${env.getEnvironment()}/orders/${orderId}`,
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${token.getToken()}`,
+      },
+    })
+  }
+
 }

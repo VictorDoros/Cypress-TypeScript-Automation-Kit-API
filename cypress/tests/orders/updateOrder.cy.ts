@@ -2,7 +2,7 @@ import Environment from '../../fixtures/environment'
 import Token from '../../fixtures/token'
 import App from '../../App'
 
-describe('Create Order', {}, () => {
+describe('Update Order', {}, () => {
   let env: Environment
   let token: Token
 
@@ -14,7 +14,7 @@ describe('Create Order', {}, () => {
     App.apiActions.registerClientFlow.registerClient(env, token)
   })
 
-  it('Should create a new order (201)', () => {
-    App.apiActions.orderFlow.createCartAddItemGetCartCreateOrder(env, token, 'Cream Cheese')
+  it('Should update an existing order (204) and reflect the changes', () => {
+    App.apiActions.orderFlow.createCartAddItemCreateOrderUpdateOrder(env, token, 'Cream Cheese', 'I wanna pick my order up at 6am.')
   })
 })

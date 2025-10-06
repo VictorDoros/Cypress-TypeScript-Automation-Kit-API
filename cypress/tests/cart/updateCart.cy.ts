@@ -1,7 +1,7 @@
 import Environment from '../../fixtures/environment'
 import App from '../../App'
 
-describe('Get products', {}, () => {
+describe('Updated Cart', {}, () => {
   let env: Environment
 
   before(() => {

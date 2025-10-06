@@ -2,7 +2,7 @@ import Environment from '../../fixtures/environment'
 import Token from '../../fixtures/token'
 import App from '../../App'
 
-describe('Create Order', {}, () => {
+describe('Delete Order', {}, () => {
   let env: Environment
   let token: Token
 
@@ -14,7 +14,7 @@ describe('Create Order', {}, () => {
     App.apiActions.registerClientFlow.registerClient(env, token)
   })
 
-  it('Should create a new order (201)', () => {
-    App.apiActions.orderFlow.createCartAddItemGetCartCreateOrder(env, token, 'Cream Cheese')
+  it('Should delete an order (204) and return 404 when retrieving it', () => {
+    App.apiActions.orderFlow.createCartAddItemCreateOrderDeleteOrder(env, token, 'Cream Cheese')
   })
 })

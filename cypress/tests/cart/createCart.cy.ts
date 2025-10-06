@@ -1,7 +1,7 @@
 import Environment from '../../fixtures/environment'
 import App from '../../App'
 
-describe('Get products', {}, () => {
+describe('Create Cart', {}, () => {
   let env: Environment
 
   before(() => {
@@ -12,7 +12,7 @@ describe('Get products', {}, () => {
     App.apiActions.cartFlow.createAndGetCart(env)
   })
 
-  it('Should return 200 and an array response when retrieving the list of products', () => {
+  it('Should add an item to the cart successfully', () => {
     App.apiActions.cartFlow.createCartAddItemGetCart(env, 'Cream Cheese')
   })
 })
