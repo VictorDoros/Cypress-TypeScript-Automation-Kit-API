@@ -17,7 +17,7 @@ export default class Order {
     })
   }
 
-getOrder(env: Environment, token: Token, orderId: string) {
+  getOrder(env: Environment, token: Token, orderId: string) {
     return cy.api({
       url: `${env.getEnvironment()}/orders/${orderId}`,
       method: 'GET',
@@ -28,7 +28,12 @@ getOrder(env: Environment, token: Token, orderId: string) {
     })
   }
 
-    updateOrder(env: Environment, token: Token, orderId: string, orderComment: string) {
+  updateOrder(
+    env: Environment,
+    token: Token,
+    orderId: string,
+    orderComment: string
+  ) {
     return cy.api({
       url: `${env.getEnvironment()}/orders/${orderId}`,
       method: 'PATCH',
@@ -41,7 +46,7 @@ getOrder(env: Environment, token: Token, orderId: string) {
     })
   }
 
-    deleteOrder(env: Environment, token: Token, orderId: string) {
+  deleteOrder(env: Environment, token: Token, orderId: string) {
     return cy.api({
       url: `${env.getEnvironment()}/orders/${orderId}`,
       method: 'DELETE',
@@ -50,5 +55,4 @@ getOrder(env: Environment, token: Token, orderId: string) {
       },
     })
   }
-
 }

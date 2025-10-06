@@ -15,6 +15,10 @@ describe('Delete Order', {}, () => {
   })
 
   it('Should delete an order (204) and return 404 when retrieving it', () => {
-    App.apiActions.orderFlow.createCartAddItemCreateOrderDeleteOrder(env, token, 'Cream Cheese')
+    App.apiActions.orderFlow.createCartAddItemCreateOrderDeleteOrder(
+      env,
+      token,
+      'Cream Cheese'
+    )
   })
 })

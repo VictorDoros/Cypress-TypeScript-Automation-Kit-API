@@ -15,6 +15,11 @@ describe('Update Order', {}, () => {
   })
 
   it('Should update an existing order (204) and reflect the changes', () => {
-    App.apiActions.orderFlow.createCartAddItemCreateOrderUpdateOrder(env, token, 'Cream Cheese', 'I wanna pick my order up at 6am.')
+    App.apiActions.orderFlow.createCartAddItemCreateOrderUpdateOrder(
+      env,
+      token,
+      'Cream Cheese',
+      'I wanna pick my order up at 6am.'
+    )
   })
 })

@@ -15,6 +15,10 @@ describe('Create Order', {}, () => {
   })
 
   it('Should create a new order (201)', () => {
-    App.apiActions.orderFlow.createCartAddItemGetCartCreateOrder(env, token, 'Cream Cheese')
+    App.apiActions.orderFlow.createCartAddItemGetCartCreateOrder(
+      env,
+      token,
+      'Cream Cheese'
+    )
   })
 })
