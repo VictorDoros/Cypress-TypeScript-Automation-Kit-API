@@ -11,6 +11,7 @@ class API_Actions {
   get cartFlow() {
     return CartFlow
   }
+  
   get orderFlow() {
     return OrderFlow
   }

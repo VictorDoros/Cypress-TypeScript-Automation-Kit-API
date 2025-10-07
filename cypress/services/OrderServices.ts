@@ -4,7 +4,7 @@ import { faker } from '@faker-js/faker'
 
 export default class Order {
   createOrder(env: Environment, token: Token, cartId: string) {
-    return cy.api({
+    return cy.step('Create order').api({
       url: `${env.getEnvironment()}/orders`,
       method: 'POST',
       body: {
@@ -18,7 +18,7 @@ export default class Order {
   }
 
   getOrder(env: Environment, token: Token, orderId: string) {
-    return cy.api({
+    return cy.step('Get order').api({
       url: `${env.getEnvironment()}/orders/${orderId}`,
       method: 'GET',
       headers: {
@@ -34,7 +34,7 @@ export default class Order {
     orderId: string,
     orderComment: string
   ) {
-    return cy.api({
+    return cy.step('Update order').api({
       url: `${env.getEnvironment()}/orders/${orderId}`,
       method: 'PATCH',
       body: {
@@ -47,7 +47,7 @@ export default class Order {
   }
 
   deleteOrder(env: Environment, token: Token, orderId: string) {
-    return cy.api({
+    return cy.step('Delete order').api({
       url: `${env.getEnvironment()}/orders/${orderId}`,
       method: 'DELETE',
       headers: {

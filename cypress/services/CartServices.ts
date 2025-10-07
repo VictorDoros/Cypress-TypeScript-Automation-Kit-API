@@ -2,21 +2,21 @@ import Environment from '../fixtures/environment'
 
 export default class Cart {
   createCart(env: Environment) {
-    return cy.api({
+    return cy.step('Create cart').api({
       url: `${env.getEnvironment()}/carts`,
       method: 'POST',
     })
   }
 
   getCart(env: Environment, cartId: string) {
-    return cy.api({
+    return cy.step('Get cart').api({
       url: `${env.getEnvironment()}/carts/${cartId}`,
       method: 'GET',
     })
   }
 
   addItemToCart(env: Environment, cartId: string, productId: string) {
-    return cy.api({
+    return cy.step('Add item to cart').api({
       url: `${env.getEnvironment()}/carts/${cartId}/items`,
       method: 'POST',
       body: {
@@ -26,7 +26,7 @@ export default class Cart {
   }
 
   updateQuantityItem(env: Environment, cartId: string, itemId: string) {
-    return cy.api({
+    return cy.step('Update quantity of item').api({
       url: `${env.getEnvironment()}/carts/${cartId}/items/${itemId}`,
       method: 'PATCH',
       body: {
@@ -41,7 +41,7 @@ export default class Cart {
     initialItemId: string,
     replacedProductId: string
   ) {
-    return cy.api({
+    return cy.step('Replace item').api({
       url: `${env.getEnvironment()}/carts/${cartId}/items/${initialItemId}`,
       method: 'PUT',
       body: {
