@@ -5,6 +5,16 @@ It provides a clean structure for scalable API testing — using services, flows
 
 ---
 
+🌐 Test API Source
+
+This project uses the Simple Grocery Store API, an open-source REST API designed for learning and testing purposes.
+You can explore it here:
+👉 [Simple Grocery Store API – by Valentin Despa](https://github.com/vdespa/Postman-Complete-Guide-API-Testing/blob/main/simple-grocery-store-api.md)
+
+The API provides endpoints for products, carts, and orders — making it ideal for demonstrating reusable service and flow patterns.
+
+---
+
 ## 🚀 Features
 
 - ✅ TypeScript end-to-end typing (services, flows, DTOs)
