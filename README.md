@@ -20,13 +20,55 @@ It provides a clean structure for scalable API testing — using services, flows
 ## 🗂️ Folder Structure
 
 ```
-cypress/
-├── fixtures/           # Test data, tokens, environment configs
-├── flows/              # Reusable multi-step test flows
-├── services/           # Low-level API service calls
-├── support/            # Helpers, plugins, and Cypress setup
-├── tests/              # API test cases (organized by feature)
-└── tsconfig.json       # TypeScript configuration
+Cypress-API-Kit/
+├── .github/
+│   └── workflows/
+│       └── main.yml                     # GitHub Actions CI workflow
+│
+├── cypress/
+│   ├── fixtures/                        # Static test data and configs
+│   │   ├── environment.ts               # Environment config (QA/Staging/Prod)
+│   │   └── token.ts                     # Token and authentication helpers
+│   │
+│   ├── flows/                           # Reusable multi-step logic (end-to-end flows)
+│   │   ├── CartFlow.ts                  # Flow handling cart actions
+│   │   ├── OrderFlow.ts                 # Flow handling order creation/update
+│   │   ├── ProductFlow.ts               # Flow handling product operations
+│   │   └── RegisterClientFlow.ts        # Flow for client registration
+│   │
+│   ├── services/                        # API endpoints grouped by domain
+│   │   ├── CartServices.ts              # /cart endpoints
+│   │   ├── OrderServices.ts             # /orders endpoints
+│   │   ├── ProductServices.ts           # /products endpoints
+│   │   └── RegisterClientServices.ts    # /clients endpoints
+│   │
+│   ├── support/                         # Global support utilities
+│   │   ├── commands.ts                  # Custom Cypress commands
+│   │   ├── e2e.ts                       # Global before/after hooks setup
+│   │   └── TestHelpers.ts               # Helper functions and custom step wrappers
+│   │
+│   ├── tests/                           # API test specs
+│   │   ├── cart/
+│   │   │   ├── createCart.cy.ts         # Create cart API test
+│   │   │   └── updateCart.cy.ts         # Update cart API test
+│   │   │
+│   │   ├── orders/
+│   │   │   ├── createOrder.cy.ts        # Create order API test
+│   │   │   ├── deleteOrder.cy.ts        # Delete order API test
+│   │   │   └── updateOrder.cy.ts        # Update order API test
+│   │   │
+│   │   └── products/
+│   │       └── listProducts.cy.ts       # List products API test
+│   │
+│   ├── App.ts                           # Entry or bootstrap file
+│   ├── cypress.d.ts                     # Custom Cypress type declarations
+│   ├── cypress.config.ts                # Cypress configuration
+│   └── tsconfig.json                    # TypeScript configuration for Cypress
+│
+├── package.json                         # Scripts and dependency management
+├── package-lock.json                    # Locked dependency versions
+├── README.md                            # Project documentation
+└── .gitignore                           # Git ignored files and folders
 ```
 
 ---
