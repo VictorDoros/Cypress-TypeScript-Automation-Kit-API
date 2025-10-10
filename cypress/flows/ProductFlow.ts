@@ -4,38 +4,44 @@ import Environment from '../fixtures/environment'
 class ProductFlow {
   private productServices = new ProductServices()
 
+  /**
+   * Retrieves the list of all available products.
+   *
+   * @param env - Target environment/config for the API request.
+   */
   getListProducts(env: Environment) {
-    return this.productServices.getAllProducts(env).then((response) => {
-      expect(response.status).to.eq(200)
-      expect(response).to.be.an('object')
-      expect(response.body.length).to.be.above(0)
+    return this.productServices.getAllProducts(env).then((getListProductsResponse) => {
+      return getListProductsResponse
     })
   }
 
+  /**
+   * Retrieves the list of products and returns the ID of a product
+   * that matches the given name and is currently in stock.
+   *
+   * @param env - Target environment/config for the API request.
+   * @param productName - The name of the product to search for.
+   */
   getListProductsAndReturnProductId(env: Environment, productName: string) {
-    return this.getListProducts(env).then((responseGetListProducts) => {
-      const foundProduct = (responseGetListProducts.body as any[]).find(
+    return this.getListProducts(env).then((getListProductsResponse) => {
+      const foundProduct = (getListProductsResponse.body as any[]).find(
         (product) => product.name === productName && product.inStock === true
       )
-      if (!foundProduct) {
-        throw new Error(`Product ${productName} not found or not in stock`)
-      }
-      return foundProduct?.id
+      if (!foundProduct) throw new Error(`Product ${productName} not found or not in stock`)
+      return foundProduct.id
     })
   }
 
+  /**
+   * Retrieves detailed information for a specific product by name.
+   *
+   * @param env - Target environment/config for the API request.
+   * @param productName - The name of the product to fetch.
+   */
   getProduct(env: Environment, productName: string) {
-    return this.getListProductsAndReturnProductId(env, productName).then(
-      (productId) => {
-        return this.productServices
-          .getSingleProduct(env, productId)
-          .then((getProductResponse) => {
-            expect(getProductResponse.status).to.eq(200)
-            expect(getProductResponse.body.name).to.eq(productName)
-            expect(getProductResponse.body['current-stock']).to.be.above(1)
-          })
-      }
-    )
+    return this.getListProductsAndReturnProductId(env, productName).then((productId) => {
+      return this.productServices.getSingleProduct(env, productId)
+    })
   }
 }
 

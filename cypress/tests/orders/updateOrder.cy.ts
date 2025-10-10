@@ -1,6 +1,9 @@
 import Environment from '../../fixtures/environment'
 import Token from '../../fixtures/token'
 import App from '../../App'
+import TestHelpers from '../../support/TestHelpers'
+
+const ORDER_COMMENT = 'I wanna pick my order up at 6am.' as const
 
 describe('Update Order', {}, () => {
   let env: Environment
@@ -10,16 +13,24 @@ describe('Update Order', {}, () => {
     env = new Environment()
     token = new Token()
 
-    // Register client
-    App.apiActions.registerClientFlow.registerClient(env, token)
+      App.apiActions.registerClientFlow.registerClient(env, token)
   })
 
-  it('Should update an existing order (204) and reflect the changes', () => {
+  it('Should return 204 after updating the order and verify the comment was changed', () => {
     App.apiActions.orderFlow.createCartAddItemCreateOrderUpdateOrder(
       env,
       token,
       'Cream Cheese',
-      'I wanna pick my order up at 6am.'
-    )
+      ORDER_COMMENT
+    ).then(({updateOrderResponse, getOrderResponse}) => {
+
+        TestHelpers.defineTheStep('Confirm status code 204 when updating the order\'s comment').then(() => {
+          expect(updateOrderResponse.status).to.eq(204)
+                              })
+
+        TestHelpers.defineTheStep('Verify the order comment was updated successfully').then(() => {
+          expect(getOrderResponse.body.comment).to.eq(ORDER_COMMENT)
+                              })
+    })
   })
 })

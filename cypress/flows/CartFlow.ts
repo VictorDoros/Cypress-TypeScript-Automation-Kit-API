@@ -5,36 +5,45 @@ import Environment from '../fixtures/environment'
 class CartFlow {
   private cart = new CartServices()
 
+  /**
+   * Create a cart and return its id along with the raw create response.
+   *
+   * @param env - Target environment/config for the API calls.
+   */
   createCartAndReturnId(env: Environment) {
-    return this.cart.createCart(env).then((response) => {
-      expect(response.status).to.eq(201)
-      return response.body.cartId
+    return this.cart.createCart(env).then((createCartResponse) => {
+      return {cartId: createCartResponse.body.cartId, createCartResponse}
     })
   }
 
+  /**
+   * Create a cart and then fetch it.
+   *
+   * @param env - Target environment/config for the API calls.
+   */
   createAndGetCart(env: Environment) {
-    return this.createCartAndReturnId(env).then((cartId) => {
+    return this.createCartAndReturnId(env).then(({cartId, createCartResponse}) => {
       return this.cart.getCart(env, cartId).then((getCartResponse) => {
-        expect(getCartResponse.status).to.eq(200)
-        expect(getCartResponse.body.items).to.be.an('array').and.empty
+        return {createCartResponse, getCartResponse}
       })
     })
   }
 
+  /**
+   * Create a cart, add a product by name, then fetch the cart.
+   *
+   * @param env - Target environment/config for the API calls.
+   * @param productName - Human-readable product name to resolve to a product id.
+   */
   createCartAddItemGetCart(env: Environment, productName: string) {
     return ProductFlow.getListProductsAndReturnProductId(env, productName).then(
       (productId) => {
-        return this.createCartAndReturnId(env).then((cartId) => {
+        return this.createCartAndReturnId(env).then(({cartId}) => {
           return this.cart
             .addItemToCart(env, cartId, productId)
-            .then((addCartResponse) => {
-              expect(addCartResponse.status).to.eq(201)
-              expect(addCartResponse.body.created).to.be.true
-            })
-            .then(() => {
-              return this.cart.getCart(env, cartId).then((getCartResponse) => {
-                expect(getCartResponse.body.items.length).eq(1)
-                expect(getCartResponse.body.items[0].productId).to.eq(productId)
+            .then((addItemResponse) => {
+            return this.cart.getCart(env, cartId).then((getCartResponse) => {
+              return ({addItemResponse, getCartResponse, productId})
               })
             })
         })
@@ -42,43 +51,38 @@ class CartFlow {
     )
   }
 
+  /**
+   * Create a cart, add a product, update its quantity, and return quantities before/after.
+   *
+   * @param env - Target environment/config for the API calls.
+   * @param productName - Product to add before updating its quantity.
+   */
   createCartAddItemUpdateQuantityItem(env: Environment, productName: string) {
-    return ProductFlow.getListProductsAndReturnProductId(env, productName).then(
-      (productId) => {
-        return this.createCartAndReturnId(env).then((cartId) => {
-          return this.cart
-            .addItemToCart(env, cartId, productId)
-            .then((addItemResponse) => {
-              return addItemResponse.body.itemId
+  return ProductFlow.getListProductsAndReturnProductId(env, productName).then((productId) => {
+    return this.createCartAndReturnId(env).then(({ cartId }) => {
+      return this.cart.addItemToCart(env, cartId, productId).then((addItemResponse) => {
+        const itemId = addItemResponse.body.itemId 
+        return this.cart.getCart(env, cartId).then((getCartBefore) => {
+          const initialQuantity = getCartBefore.body.items[0].quantity
+          return this.cart.updateQuantityItem(env, cartId, itemId).then((updateQuantityResponse) => {
+            return this.cart.getCart(env, cartId).then((getCartAfter) => {
+              const updatedQuantity = getCartAfter.body.items[0].quantity
+              return {initialQuantity, updateQuantityResponse, updatedQuantity}
             })
-            .then((itemId) => {
-              return this.cart
-                .getCart(env, cartId)
-                .then((getCartResponse) => {
-                  const initialQuantity = getCartResponse.body.items[0].quantity
-                  expect(initialQuantity).to.eq(1)
-                  return initialQuantity
-                })
-                .then((initialQuantity) => {
-                  return this.cart
-                    .updateQuantityItem(env, cartId, itemId)
-                    .then((updateQuantityResponse) => {
-                      expect(updateQuantityResponse.status).to.eq(204)
-                    })
-                    .then(() => {
-                      this.cart.getCart(env, cartId).then((getCartResponse) => {
-                        const updatedQuantityItem =
-                          getCartResponse.body.items[0].quantity
-                        expect(updatedQuantityItem).not.to.eq(initialQuantity)
-                      })
-                    })
-                })
-            })
+          })
         })
-      }
-    )
-  }
+      })
+    })
+  })
+}
 
+  /**
+   * Create a cart, add an initial product, then replace it with another product.
+   *
+   * @param env - Target environment/config for the API calls.
+   * @param initialProductName - Product to add first.
+   * @param replacedProductName - Product that will replace the initial item.
+   */
   createCartAddItemReplaceItem(
     env: Environment,
     initialProductName: string,
@@ -88,40 +92,21 @@ class CartFlow {
       env,
       initialProductName
     ).then((initialProductId) => {
-      return this.createCartAndReturnId(env).then((cartId) => {
+      return this.createCartAndReturnId(env).then(({cartId}) => {
         return this.cart
           .addItemToCart(env, cartId, initialProductId)
           .then((addItemResponse) => {
-            return addItemResponse.body.itemId
-          })
-          .then((initialItemId) => {
-            return this.cart
-              .getCart(env, cartId)
-              .then((getCartResponse) => {
-                expect(getCartResponse.body.items[0].productId).to.eq(
-                  initialProductId
-                )
-              })
-              .then(() => {
-                return ProductFlow.getListProductsAndReturnProductId(
-                  env,
-                  replacedProductName
-                ).then((replacedProductId) => {
-                  return this.cart
-                    .replaceItem(env, cartId, initialItemId, replacedProductId)
-                    .then((replaceItemResponse) => {
-                      expect(replaceItemResponse.status).to.eq(204)
-                    })
-                    .then(() => {
-                      this.cart.getCart(env, cartId).then((getCartResponse) => {
-                        expect(initialProductId).not.to.eq(replacedProductId)
-                        expect(getCartResponse.body.items[0].productId).to.eq(
-                          replacedProductId
-                        )
-                      })
-                    })
+            const initialItemId =  addItemResponse.body.itemId
+            return this.cart.getCart(env, cartId).then((getCartResponseBefore) => {
+              const initialProductId = getCartResponseBefore.body.items[0].productId
+              return ProductFlow.getListProductsAndReturnProductId(env, replacedProductName).then((replacedProductId) => {
+                return this.cart.replaceItem(env, cartId, initialItemId, replacedProductId).then((replaceItemResponse) => {
+                  return this.cart.getCart(env, cartId).then((getCartResponseAfter) => {
+                    return({initialProductId, replaceItemResponse, getCartResponseBefore, getCartResponseAfter, replacedProductId })
+                  })
                 })
               })
+            })
           })
       })
     })

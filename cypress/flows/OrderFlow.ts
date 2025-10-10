@@ -9,6 +9,13 @@ class OrderFlow {
   private orderServices = new OrderServices()
   private cartServices = new CartServices()
 
+   /**
+   * Creates a cart, adds a product to it, creates an order, and retrieves the order details.
+   *
+   * @param env - Target environment/config for API calls.
+   * @param token - Authorization token for the request.
+   * @param productName - Product name to be added to the cart.
+   */
   createCartAddItemGetCartCreateOrder(
     env: Environment,
     token: Token,
@@ -16,30 +23,31 @@ class OrderFlow {
   ) {
     return ProductFlow.getListProductsAndReturnProductId(env, productName).then(
       (productId) => {
-        return CartFlow.createCartAndReturnId(env).then((cartId) => {
+        return CartFlow.createCartAndReturnId(env).then(({cartId}) => {
           return this.cartServices
             .addItemToCart(env, cartId, productId)
             .then(() => {
               return this.orderServices.createOrder(env, token, cartId)
             })
             .then((createOrderResponse) => {
-              expect(createOrderResponse.status).to.eq(201)
-              expect(createOrderResponse.body.created).to.be.true
-              return createOrderResponse.body.orderId
-            })
-            .then((orderId) => {
-              this.orderServices
-                .getOrder(env, token, orderId)
-                .then((getOrderResponse) => {
-                  expect(getOrderResponse.body.items.length).to.eq(1)
-                  expect(getOrderResponse.body.comment).is.empty
-                })
+              const orderId = createOrderResponse.body.orderId
+              return this.orderServices.getOrder(env, token, orderId).then((getOrderResponse) => {
+                return {createOrderResponse, getOrderResponse}
+              })
             })
         })
       }
     )
   }
 
+  /**
+   * Creates a cart, adds a product, creates an order, updates the order with a comment, and retrieves it.
+   *
+   * @param env - Target environment/config for API calls.
+   * @param token - Authorization token for the request.
+   * @param productName - Product name to add to the cart.
+   * @param orderComment - Comment or note to update in the order.
+   */
   createCartAddItemCreateOrderUpdateOrder(
     env: Environment,
     token: Token,
@@ -48,34 +56,32 @@ class OrderFlow {
   ) {
     return ProductFlow.getListProductsAndReturnProductId(env, productName).then(
       (productId) => {
-        return CartFlow.createCartAndReturnId(env).then((cartId) => {
+        return CartFlow.createCartAndReturnId(env).then(({cartId}) => {
           return this.cartServices
             .addItemToCart(env, cartId, productId)
             .then(() => {
               return this.orderServices.createOrder(env, token, cartId)
             })
             .then((createOrderResponse) => {
-              return createOrderResponse.body.orderId
-            })
-            .then((orderId) => {
-              this.orderServices
-                .updateOrder(env, token, orderId, orderComment)
-                .then((updateOrderResponse) => {
-                  expect(updateOrderResponse.status).to.eq(204)
+              const orderId = createOrderResponse.body.orderId
+              return this.orderServices.updateOrder(env, token, orderId, orderComment).then((updateOrderResponse) => {
+                return this.orderServices.getOrder(env, token, orderId).then((getOrderResponse) => {
+                  return {updateOrderResponse, getOrderResponse}
                 })
-                .then(() => {
-                  this.orderServices
-                    .getOrder(env, token, orderId)
-                    .then((getOrderResponse) => {
-                      expect(getOrderResponse.body.comment).to.eq(orderComment)
-                    })
-                })
+              })
             })
         })
       }
     )
   }
 
+  /**
+   * Creates a cart, adds a product, creates an order, deletes the order, and then fetches its details.
+   *
+   * @param env - Target environment/config for API calls.
+   * @param token - Authorization token for the request.
+   * @param productName - Product name to add before order creation.
+   */
   createCartAddItemCreateOrderDeleteOrder(
     env: Environment,
     token: Token,
@@ -83,31 +89,19 @@ class OrderFlow {
   ) {
     return ProductFlow.getListProductsAndReturnProductId(env, productName).then(
       (productId) => {
-        return CartFlow.createCartAndReturnId(env).then((cartId) => {
+        return CartFlow.createCartAndReturnId(env).then(({cartId}) => {
           return this.cartServices
             .addItemToCart(env, cartId, productId)
             .then(() => {
               return this.orderServices.createOrder(env, token, cartId)
             })
             .then((createOrderResponse) => {
-              return createOrderResponse.body.orderId
-            })
-            .then((orderId) => {
-              this.orderServices
-                .deleteOrder(env, token, orderId)
-                .then((deleteOrderResponse) => {
-                  expect(deleteOrderResponse.status).to.eq(204)
+              const orderId = createOrderResponse.body.orderId
+              return this.orderServices.deleteOrder(env, token, orderId).then((deleteOrderResponse) => {
+                return this.orderServices.getOrder(env, token, orderId).then((getOrderResponse) => {
+                  return {deleteOrderResponse, getOrderResponse, orderId}
                 })
-                .then(() => {
-                  this.orderServices
-                    .getOrder(env, token, orderId)
-                    .then((getOrderResponse) => {
-                      expect(getOrderResponse.status).to.eq(404)
-                      expect(getOrderResponse.body.error).to.eq(
-                        `No order with id ${orderId}.`
-                      )
-                    })
-                })
+              })
             })
         })
       }
