@@ -5,7 +5,6 @@ import Token from '../fixtures/token'
 class RegisterClientFlow {
   private registerClientServices = new RegisterClientServices()
 
-
   /**
    * Registers a new client in the given environment using the provided token.
    *

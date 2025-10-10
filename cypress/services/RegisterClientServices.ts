@@ -4,7 +4,8 @@ import { faker } from '@faker-js/faker'
 
 export default class RegisterClient {
   registerClient(env: Environment, token: Token) {
-    return cy.step('Register client')
+    return cy
+      .step('Register client')
       .api({
         url: `${env.getEnvironment()}/api-clients`,
         method: 'POST',

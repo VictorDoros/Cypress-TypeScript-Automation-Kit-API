@@ -9,7 +9,7 @@ class OrderFlow {
   private orderServices = new OrderServices()
   private cartServices = new CartServices()
 
-   /**
+  /**
    * Creates a cart, adds a product to it, creates an order, and retrieves the order details.
    *
    * @param env - Target environment/config for API calls.
@@ -23,7 +23,7 @@ class OrderFlow {
   ) {
     return ProductFlow.getListProductsAndReturnProductId(env, productName).then(
       (productId) => {
-        return CartFlow.createCartAndReturnId(env).then(({cartId}) => {
+        return CartFlow.createCartAndReturnId(env).then(({ cartId }) => {
           return this.cartServices
             .addItemToCart(env, cartId, productId)
             .then(() => {
@@ -31,9 +31,11 @@ class OrderFlow {
             })
             .then((createOrderResponse) => {
               const orderId = createOrderResponse.body.orderId
-              return this.orderServices.getOrder(env, token, orderId).then((getOrderResponse) => {
-                return {createOrderResponse, getOrderResponse}
-              })
+              return this.orderServices
+                .getOrder(env, token, orderId)
+                .then((getOrderResponse) => {
+                  return { createOrderResponse, getOrderResponse }
+                })
             })
         })
       }
@@ -56,7 +58,7 @@ class OrderFlow {
   ) {
     return ProductFlow.getListProductsAndReturnProductId(env, productName).then(
       (productId) => {
-        return CartFlow.createCartAndReturnId(env).then(({cartId}) => {
+        return CartFlow.createCartAndReturnId(env).then(({ cartId }) => {
           return this.cartServices
             .addItemToCart(env, cartId, productId)
             .then(() => {
@@ -64,11 +66,15 @@ class OrderFlow {
             })
             .then((createOrderResponse) => {
               const orderId = createOrderResponse.body.orderId
-              return this.orderServices.updateOrder(env, token, orderId, orderComment).then((updateOrderResponse) => {
-                return this.orderServices.getOrder(env, token, orderId).then((getOrderResponse) => {
-                  return {updateOrderResponse, getOrderResponse}
+              return this.orderServices
+                .updateOrder(env, token, orderId, orderComment)
+                .then((updateOrderResponse) => {
+                  return this.orderServices
+                    .getOrder(env, token, orderId)
+                    .then((getOrderResponse) => {
+                      return { updateOrderResponse, getOrderResponse }
+                    })
                 })
-              })
             })
         })
       }
@@ -89,7 +95,7 @@ class OrderFlow {
   ) {
     return ProductFlow.getListProductsAndReturnProductId(env, productName).then(
       (productId) => {
-        return CartFlow.createCartAndReturnId(env).then(({cartId}) => {
+        return CartFlow.createCartAndReturnId(env).then(({ cartId }) => {
           return this.cartServices
             .addItemToCart(env, cartId, productId)
             .then(() => {
@@ -97,11 +103,15 @@ class OrderFlow {
             })
             .then((createOrderResponse) => {
               const orderId = createOrderResponse.body.orderId
-              return this.orderServices.deleteOrder(env, token, orderId).then((deleteOrderResponse) => {
-                return this.orderServices.getOrder(env, token, orderId).then((getOrderResponse) => {
-                  return {deleteOrderResponse, getOrderResponse, orderId}
+              return this.orderServices
+                .deleteOrder(env, token, orderId)
+                .then((deleteOrderResponse) => {
+                  return this.orderServices
+                    .getOrder(env, token, orderId)
+                    .then((getOrderResponse) => {
+                      return { deleteOrderResponse, getOrderResponse, orderId }
+                    })
                 })
-              })
             })
         })
       }

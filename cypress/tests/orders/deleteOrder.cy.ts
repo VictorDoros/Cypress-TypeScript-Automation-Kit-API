@@ -15,20 +15,23 @@ describe('Delete Order', {}, () => {
   })
 
   it('Should delete an order and return status 204, then 404 when retrieving it', () => {
-    App.apiActions.orderFlow.createCartAddItemCreateOrderDeleteOrder(
-      env,
-      token,
-      'Cream Cheese'
-    ).then(({deleteOrderResponse, getOrderResponse, orderId}) => {
-
-        TestHelpers.defineTheStep('Confirm status code 204 when removing an order').then(() => {
+    App.apiActions.orderFlow
+      .createCartAddItemCreateOrderDeleteOrder(env, token, 'Cream Cheese')
+      .then(({ deleteOrderResponse, getOrderResponse, orderId }) => {
+        TestHelpers.defineTheStep(
+          'Confirm status code 204 when removing an order'
+        ).then(() => {
           expect(deleteOrderResponse.status).to.eq(204)
-                        })
+        })
 
-        TestHelpers.defineTheStep('Confirm status code 404 when retrieving a deleted order').then(() => {
+        TestHelpers.defineTheStep(
+          'Confirm status code 404 when retrieving a deleted order'
+        ).then(() => {
           expect(getOrderResponse.status).to.eq(404)
-          expect(getOrderResponse.body.error).to.eq(`No order with id ${orderId}.`)
-                        })
-    })
+          expect(getOrderResponse.body.error).to.eq(
+            `No order with id ${orderId}.`
+          )
+        })
+      })
   })
 })

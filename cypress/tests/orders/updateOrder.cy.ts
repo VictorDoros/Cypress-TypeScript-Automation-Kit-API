@@ -13,24 +13,29 @@ describe('Update Order', {}, () => {
     env = new Environment()
     token = new Token()
 
-      App.apiActions.registerClientFlow.registerClient(env, token)
+    App.apiActions.registerClientFlow.registerClient(env, token)
   })
 
   it('Should return 204 after updating the order and verify the comment was changed', () => {
-    App.apiActions.orderFlow.createCartAddItemCreateOrderUpdateOrder(
-      env,
-      token,
-      'Cream Cheese',
-      ORDER_COMMENT
-    ).then(({updateOrderResponse, getOrderResponse}) => {
-
-        TestHelpers.defineTheStep('Confirm status code 204 when updating the order\'s comment').then(() => {
+    App.apiActions.orderFlow
+      .createCartAddItemCreateOrderUpdateOrder(
+        env,
+        token,
+        'Cream Cheese',
+        ORDER_COMMENT
+      )
+      .then(({ updateOrderResponse, getOrderResponse }) => {
+        TestHelpers.defineTheStep(
+          "Confirm status code 204 when updating the order's comment"
+        ).then(() => {
           expect(updateOrderResponse.status).to.eq(204)
-                              })
+        })
 
-        TestHelpers.defineTheStep('Verify the order comment was updated successfully').then(() => {
+        TestHelpers.defineTheStep(
+          'Verify the order comment was updated successfully'
+        ).then(() => {
           expect(getOrderResponse.body.comment).to.eq(ORDER_COMMENT)
-                              })
-    })
+        })
+      })
   })
 })

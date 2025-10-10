@@ -12,7 +12,7 @@ class CartFlow {
    */
   createCartAndReturnId(env: Environment) {
     return this.cart.createCart(env).then((createCartResponse) => {
-      return {cartId: createCartResponse.body.cartId, createCartResponse}
+      return { cartId: createCartResponse.body.cartId, createCartResponse }
     })
   }
 
@@ -22,11 +22,13 @@ class CartFlow {
    * @param env - Target environment/config for the API calls.
    */
   createAndGetCart(env: Environment) {
-    return this.createCartAndReturnId(env).then(({cartId, createCartResponse}) => {
-      return this.cart.getCart(env, cartId).then((getCartResponse) => {
-        return {createCartResponse, getCartResponse}
-      })
-    })
+    return this.createCartAndReturnId(env).then(
+      ({ cartId, createCartResponse }) => {
+        return this.cart.getCart(env, cartId).then((getCartResponse) => {
+          return { createCartResponse, getCartResponse }
+        })
+      }
+    )
   }
 
   /**
@@ -38,12 +40,12 @@ class CartFlow {
   createCartAddItemGetCart(env: Environment, productName: string) {
     return ProductFlow.getListProductsAndReturnProductId(env, productName).then(
       (productId) => {
-        return this.createCartAndReturnId(env).then(({cartId}) => {
+        return this.createCartAndReturnId(env).then(({ cartId }) => {
           return this.cart
             .addItemToCart(env, cartId, productId)
             .then((addItemResponse) => {
-            return this.cart.getCart(env, cartId).then((getCartResponse) => {
-              return ({addItemResponse, getCartResponse, productId})
+              return this.cart.getCart(env, cartId).then((getCartResponse) => {
+                return { addItemResponse, getCartResponse, productId }
               })
             })
         })
@@ -58,23 +60,36 @@ class CartFlow {
    * @param productName - Product to add before updating its quantity.
    */
   createCartAddItemUpdateQuantityItem(env: Environment, productName: string) {
-  return ProductFlow.getListProductsAndReturnProductId(env, productName).then((productId) => {
-    return this.createCartAndReturnId(env).then(({ cartId }) => {
-      return this.cart.addItemToCart(env, cartId, productId).then((addItemResponse) => {
-        const itemId = addItemResponse.body.itemId 
-        return this.cart.getCart(env, cartId).then((getCartBefore) => {
-          const initialQuantity = getCartBefore.body.items[0].quantity
-          return this.cart.updateQuantityItem(env, cartId, itemId).then((updateQuantityResponse) => {
-            return this.cart.getCart(env, cartId).then((getCartAfter) => {
-              const updatedQuantity = getCartAfter.body.items[0].quantity
-              return {initialQuantity, updateQuantityResponse, updatedQuantity}
+    return ProductFlow.getListProductsAndReturnProductId(env, productName).then(
+      (productId) => {
+        return this.createCartAndReturnId(env).then(({ cartId }) => {
+          return this.cart
+            .addItemToCart(env, cartId, productId)
+            .then((addItemResponse) => {
+              const itemId = addItemResponse.body.itemId
+              return this.cart.getCart(env, cartId).then((getCartBefore) => {
+                const initialQuantity = getCartBefore.body.items[0].quantity
+                return this.cart
+                  .updateQuantityItem(env, cartId, itemId)
+                  .then((updateQuantityResponse) => {
+                    return this.cart
+                      .getCart(env, cartId)
+                      .then((getCartAfter) => {
+                        const updatedQuantity =
+                          getCartAfter.body.items[0].quantity
+                        return {
+                          initialQuantity,
+                          updateQuantityResponse,
+                          updatedQuantity,
+                        }
+                      })
+                  })
+              })
             })
-          })
         })
-      })
-    })
-  })
-}
+      }
+    )
+  }
 
   /**
    * Create a cart, add an initial product, then replace it with another product.
@@ -92,21 +107,37 @@ class CartFlow {
       env,
       initialProductName
     ).then((initialProductId) => {
-      return this.createCartAndReturnId(env).then(({cartId}) => {
+      return this.createCartAndReturnId(env).then(({ cartId }) => {
         return this.cart
           .addItemToCart(env, cartId, initialProductId)
           .then((addItemResponse) => {
-            const initialItemId =  addItemResponse.body.itemId
-            return this.cart.getCart(env, cartId).then((getCartResponseBefore) => {
-              const initialProductId = getCartResponseBefore.body.items[0].productId
-              return ProductFlow.getListProductsAndReturnProductId(env, replacedProductName).then((replacedProductId) => {
-                return this.cart.replaceItem(env, cartId, initialItemId, replacedProductId).then((replaceItemResponse) => {
-                  return this.cart.getCart(env, cartId).then((getCartResponseAfter) => {
-                    return({initialProductId, replaceItemResponse, getCartResponseBefore, getCartResponseAfter, replacedProductId })
-                  })
+            const initialItemId = addItemResponse.body.itemId
+            return this.cart
+              .getCart(env, cartId)
+              .then((getCartResponseBefore) => {
+                const initialProductId =
+                  getCartResponseBefore.body.items[0].productId
+                return ProductFlow.getListProductsAndReturnProductId(
+                  env,
+                  replacedProductName
+                ).then((replacedProductId) => {
+                  return this.cart
+                    .replaceItem(env, cartId, initialItemId, replacedProductId)
+                    .then((replaceItemResponse) => {
+                      return this.cart
+                        .getCart(env, cartId)
+                        .then((getCartResponseAfter) => {
+                          return {
+                            initialProductId,
+                            replaceItemResponse,
+                            getCartResponseBefore,
+                            getCartResponseAfter,
+                            replacedProductId,
+                          }
+                        })
+                    })
                 })
               })
-            })
           })
       })
     })

@@ -10,9 +10,11 @@ class ProductFlow {
    * @param env - Target environment/config for the API request.
    */
   getListProducts(env: Environment) {
-    return this.productServices.getAllProducts(env).then((getListProductsResponse) => {
-      return getListProductsResponse
-    })
+    return this.productServices
+      .getAllProducts(env)
+      .then((getListProductsResponse) => {
+        return getListProductsResponse
+      })
   }
 
   /**
@@ -27,7 +29,8 @@ class ProductFlow {
       const foundProduct = (getListProductsResponse.body as any[]).find(
         (product) => product.name === productName && product.inStock === true
       )
-      if (!foundProduct) throw new Error(`Product ${productName} not found or not in stock`)
+      if (!foundProduct)
+        throw new Error(`Product ${productName} not found or not in stock`)
       return foundProduct.id
     })
   }
@@ -39,9 +42,11 @@ class ProductFlow {
    * @param productName - The name of the product to fetch.
    */
   getProduct(env: Environment, productName: string) {
-    return this.getListProductsAndReturnProductId(env, productName).then((productId) => {
-      return this.productServices.getSingleProduct(env, productId)
-    })
+    return this.getListProductsAndReturnProductId(env, productName).then(
+      (productId) => {
+        return this.productServices.getSingleProduct(env, productId)
+      }
+    )
   }
 }
 
